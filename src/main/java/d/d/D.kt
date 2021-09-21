@@ -1,23 +1,26 @@
 package d.d
 
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.Location
-import org.bukkit.Material
+import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.block.data.Ageable
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
-import org.bukkit.entity.Player
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.util.Vector
 import java.io.File
+import java.util.function.Predicate
+import kotlin.math.ceil
 
 class D : JavaPlugin(),Listener,CommandExecutor{
     var CD: ConsoleCommandSender = Bukkit.getConsoleSender()
@@ -38,9 +41,9 @@ class D : JavaPlugin(),Listener,CommandExecutor{
     }
     @EventHandler
     fun onBreak(e: BlockBreakEvent) {
-        e.isCancelled=blockin(e.block,e.player)
+        e.isCancelled=blocking(e.block,e.player)
         if (e.block.type == Material.WHEAT && !e.isCancelled) {
-            val r = Math.ceil(Math.random() * 10000)
+            val r = ceil(Math.random() * 10000)
             val ag= e.block.blockData as Ageable
             if(ag.age == 7)
             {
@@ -127,15 +130,15 @@ class D : JavaPlugin(),Listener,CommandExecutor{
         return true
     }
     @EventHandler
-    fun interesion(e:PlayerInteractEvent)
+    fun intrusion(e:PlayerInteractEvent)
     {
         if(e.clickedBlock!=null)
         {
-            e.isCancelled=blockin(e.clickedBlock as Block,e.player)
+            e.isCancelled=blocking(e.clickedBlock as Block,e.player)
         }
 
     }
-    fun blockin(b:Block,p:Player):Boolean
+    private fun blocking(b:Block, p:Player):Boolean
     {
         val pl =server.offlinePlayers
         val onpl =server.onlinePlayers
@@ -168,5 +171,61 @@ class D : JavaPlugin(),Listener,CommandExecutor{
             }
         }
         return inBlock
+    }
+    @EventHandler
+    fun kalistar(e:EntityShootBowEvent){
+        var player =e.entity
+        val arrow = e.projectile
+        if(arrow is Arrow&&player is Player)
+        {
+            val start = player.eyeLocation
+            val direction = start.direction
+            val world = start.world
+            val range=10.0
+            val arrowSize=1.5
+            e.isCancelled=true
+            var pre:Predicate<Entity> = Predicate{ num: Entity -> num !=player && num is LivingEntity}
+            val hitResult = world?.rayTrace(
+                start,
+                direction,
+                range,
+                FluidCollisionMode.NEVER,
+                true,
+                arrowSize,
+                pre
+            )
+            var isfire = false
+            e.bow?.enchantments?.get(Enchantment.ARROW_FIRE).let()
+            {
+                isfire=true
+            }
+            hitResult?.hitEntity.let { target ->
+                target?.location?.let {
+                    target?.world.spawnParticle(Particle.FIREWORKS_SPARK,
+                        it,10,0.0,0.0,0.0,0.1,null,true)
+                }
+                target?.let { CD.sendMessage(it.name)
+                    it as LivingEntity
+                    it.damage(5.0,player)
+                    it.fireTicks=if(isfire)100 else it.fireTicks
+                    player.location.y+=0.5
+                    player.velocity.y=0.0
+                    var velocity = player.velocity.normalize().multiply(1.6)
+                    velocity.y=0.3
+                    player.velocity=velocity
+                }
+            }
+        }
+    }
+    @EventHandler
+    fun trindamier(e:EntityDamageByEntityEvent)
+    {
+        var entity =e.entity
+        var player = e.damager
+        if(player is Player)
+        {
+            var dam=(20-player.health)*2
+            e.damage+=dam
+        }
     }
 }

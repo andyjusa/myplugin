@@ -4,6 +4,7 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.block.Block
 import org.bukkit.block.data.Ageable
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -37,34 +38,7 @@ class D : JavaPlugin(),Listener,CommandExecutor{
     }
     @EventHandler
     fun onBreak(e: BlockBreakEvent) {
-        val pl =server.offlinePlayers
-        val onpl =server.onlinePlayers
-        for (a in pl){
-            val x0=config.getInt("${a.name}.x")
-            val z0=config.getInt("${a.name}.z")
-            val x1=config.getInt("${a.name}.x1")
-            val z1=config.getInt("${a.name}.z1")
-            val X = if(x0>x1) x0 else x1
-            val x = if(x1>x0) x0 else x1
-            val Z = if(z0>z1) z0 else z1
-            val z = if(z1>z0) z0 else z1
-            if((e.block.location.blockX in x..X)&&(e.block.location.blockY in z..Z)){
-                e.isCancelled = a.name != e.player.name
-            }
-        }
-        for (a in onpl){
-            val x0=config.getInt("${a.name}.x")
-            val z0=config.getInt("${a.name}.z")
-            val x1=config.getInt("${a.name}.x1")
-            val z1=config.getInt("${a.name}.z1")
-            val X = if(x0>x1) x0 else x1
-            val x = if(x1>x0) x0 else x1
-            val Z = if(z0>z1) z0 else z1
-            val z = if(z1>z0) z0 else z1
-            if((e.block.location.blockX in x..X)&&(e.block.location.blockY in z..Z)){
-                e.isCancelled = a.name != e.player.name
-            }
-        }
+        e.isCancelled=blockin(e.block,e.player)
         if (e.block.type == Material.WHEAT && !e.isCancelled) {
             val r = Math.ceil(Math.random() * 10000)
             val ag= e.block.blockData as Ageable
@@ -151,5 +125,39 @@ class D : JavaPlugin(),Listener,CommandExecutor{
             saveConfig()
         }
         return true
+    }
+    fun blockin(b:Block,p:Player):Boolean
+    {
+        val pl =server.offlinePlayers
+        val onpl =server.onlinePlayers
+        var inBlock:Boolean=false
+        for (a in pl){
+            val x0=config.getInt("${a.name}.x")
+            val z0=config.getInt("${a.name}.z")
+            val x1=config.getInt("${a.name}.x1")
+            val z1=config.getInt("${a.name}.z1")
+            val X = if(x0>x1) x0 else x1
+            val x = if(x1>x0) x0 else x1
+            val Z = if(z0>z1) z0 else z1
+            val z = if(z1>z0) z0 else z1
+            if((b.location.blockX in x..X)&&(b.location.blockY in z..Z)){
+                inBlock = a.name != p.name
+
+            }
+        }
+        for (a in onpl){
+            val x0=config.getInt("${a.name}.x")
+            val z0=config.getInt("${a.name}.z")
+            val x1=config.getInt("${a.name}.x1")
+            val z1=config.getInt("${a.name}.z1")
+            val X = if(x0>x1) x0 else x1
+            val x = if(x1>x0) x0 else x1
+            val Z = if(z0>z1) z0 else z1
+            val z = if(z1>z0) z0 else z1
+            if((b.location.blockX in x..X)&&(b.location.blockY in z..Z)){
+                inBlock = a.name != p.name
+            }
+        }
+        return inBlock
     }
 }

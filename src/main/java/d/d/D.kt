@@ -37,7 +37,7 @@ class D : JavaPlugin(),Listener,CommandExecutor{
     }
     @EventHandler
     fun onBreak(e: BlockBreakEvent) {
-        var pl =server.offlinePlayers
+        val pl =server.offlinePlayers
         val onpl =server.onlinePlayers
         for (a in pl){
             val x0=config.getInt("${a.name}.x")
@@ -122,27 +122,29 @@ class D : JavaPlugin(),Listener,CommandExecutor{
         }
         else if(args[0]=="위치구입")
         {
-            var p: Player? =Bukkit.getPlayer(args[1])
+            val p: Player? =Bukkit.getPlayer(args[1])
             if (p != null) {
                 if(sender.inventory.itemInMainHand.type== Material.DIAMOND&&sender.inventory.itemInMainHand.amount>=5&& p.name==args[1]) {
                     sender.sendMessage("${args[1]}:x ${p.location.x}    y ${p.location.y}     z ${p.location.z}")
-                    var item: ItemStack=p.inventory.itemInMainHand
+                    val item: ItemStack=p.inventory.itemInMainHand
                     item.amount-=5
                     p.inventory.setItemInMainHand(item)
                 }
             }
         }else if(args[0]=="sethome")
         {
-            config.set("${sender.name}.home.x",sender.location.x)
-            config.set("${sender.name}.home.y",sender.location.y)
-            config.set("${sender.name}.home.z",sender.location.z)
+            var home: String? =args[1]
+            config.set("${sender.name}.${home}.x",sender.location.x)
+            config.set("${sender.name}.${home}.y",sender.location.y)
+            config.set("${sender.name}.${home}.z",sender.location.z)
         }else if(args[0]=="home")
         {
+            var home: String? =args[1]
             sender.sendMessage("a")
             var loc:Location=sender.location
-            loc.x= config.getDouble("${sender.name}.home.x")
-            loc.y= config.getDouble("${sender.name}.home.y")
-            loc.z= config.getDouble("${sender.name}.home.z")
+            loc.x= config.getDouble("${sender.name}.${home}.x")
+            loc.y= config.getDouble("${sender.name}.${home}.y")
+            loc.z= config.getDouble("${sender.name}.${home}.z")
             sender.teleport(loc)
         }else if(args[0]=="save")
         {

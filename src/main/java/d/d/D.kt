@@ -14,6 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -31,7 +32,6 @@ class D : JavaPlugin(),Listener,CommandExecutor{
         server.pluginManager.registerEvents(this, this)
         getCommand("jm")?.setExecutor(this)
     }
-
     override fun onDisable() {
         saveConfig()
         CD.sendMessage("Disable Plugin")
@@ -125,6 +125,15 @@ class D : JavaPlugin(),Listener,CommandExecutor{
             saveConfig()
         }
         return true
+    }
+    @EventHandler
+    fun interesion(e:PlayerInteractEvent)
+    {
+        if(e.clickedBlock!=null)
+        {
+            e.isCancelled=blockin(e.clickedBlock as Block,e.player)
+        }
+
     }
     fun blockin(b:Block,p:Player):Boolean
     {

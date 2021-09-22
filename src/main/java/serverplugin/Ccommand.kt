@@ -1,16 +1,19 @@
-package d.d
+package serverplugin
 
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.io.File
 
-class command {
-    fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>,config:FileConfiguration,path: File): Boolean {
+class Ccommand {
+    fun onCommand(
+        sender: CommandSender,
+        args: Array<out String>,
+        config: FileConfiguration,
+    ): Boolean {
         if (sender is Player) {
             when (args[0]) {
                 "point1" -> {
@@ -22,13 +25,11 @@ class command {
                     config.set("${sender.name}.z1", sender.location.blockZ)
                 }
                 "position" -> {
-                    if (sender != null) {
-                        if (sender.inventory.itemInMainHand.type == Material.DIAMOND && sender.inventory.itemInMainHand.amount >= 5 && sender.name == args[1]) {
-                            sender.sendMessage("${args[1]}:x ${sender.location.x}    y ${sender.location.y}     z ${sender.location.z}")
-                            val item: ItemStack = sender.inventory.itemInMainHand
-                            item.amount -= 5
-                            sender.inventory.setItemInMainHand(item)
-                        }
+                    if (sender.inventory.itemInMainHand.type == Material.DIAMOND && sender.inventory.itemInMainHand.amount >= 5 && sender.name == args[1]) {
+                        sender.sendMessage("${args[1]}:x ${sender.location.x}    y ${sender.location.y}     z ${sender.location.z}")
+                        val item: ItemStack = sender.inventory.itemInMainHand
+                        item.amount -= 5
+                        sender.inventory.setItemInMainHand(item)
                     }
                 }
                 "sethome" -> {
@@ -47,10 +48,13 @@ class command {
                     sender.teleport(loc)
                 }
                 "save" -> {
-                    config.save(path)
+                    Main().saveConfig()
                 }
                 "psy" -> {
                     config.set("${sender.name}.psy", args[1])
+                }
+                "load" -> {
+                    Main().reloadConfig()
                 }
             }
             return true

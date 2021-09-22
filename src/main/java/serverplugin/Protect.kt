@@ -1,4 +1,4 @@
-package d.d
+package serverplugin
 
 import org.bukkit.Server
 import org.bukkit.block.Block

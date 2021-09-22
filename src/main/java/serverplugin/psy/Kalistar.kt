@@ -1,4 +1,4 @@
-package d.d.psy
+package serverplugin.psy
 
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Particle
@@ -13,7 +13,7 @@ import java.util.function.Predicate
 
 class Kalistar{
     fun kalistar(e: EntityShootBowEvent,config:FileConfiguration){
-        var player =e.entity
+        val player =e.entity
         val arrow = e.projectile
         if(arrow is Arrow &&player is Player &&config.getString("${player.name}.psy")=="kalistar")
         {
@@ -23,7 +23,7 @@ class Kalistar{
             val range=10.0
             val arrowSize=1.5
             e.isCancelled=true
-            var pre: Predicate<Entity> = Predicate{ num: Entity -> num !=player && num is LivingEntity }
+            val pre: Predicate<Entity> = Predicate{ num: Entity -> num !=player && num is LivingEntity }
             val hitResult = world?.rayTrace(
                 start,
                 direction,
@@ -42,17 +42,23 @@ class Kalistar{
             }
             hitResult?.hitEntity.let { target ->
                 target?.location?.let {
-                    target?.world.spawnParticle(
+                    target.world.spawnParticle(
                         Particle.FIREWORKS_SPARK,
                         it,10,0.0,0.0,0.0,0.1,null,true)
                 }
+                var alpha=0.0
+                e.bow?.enchantments?.get(Enchantment.ARROW_DAMAGE).let {
+                    if (it != null) {
+                        alpha+=it*0.2
+                    }
+                }
                 target?.let {
                     it as LivingEntity
-                    it.damage(5.0,player)
+                    it.damage(5.0+alpha,player)
                     it.fireTicks=if(isfire)100 else it.fireTicks
                     player.location.y+=0.5
                     player.velocity.y=0.0
-                    var velocity = player.velocity.normalize().multiply(1.6)
+                    val velocity = player.velocity.normalize().multiply(1.6)
                     velocity.y=0.3
                     player.velocity=velocity
                 }

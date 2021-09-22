@@ -1,6 +1,6 @@
-package d.d.psy
+package serverplugin.psy
 
-import d.d.Main
+import serverplugin.Main
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent

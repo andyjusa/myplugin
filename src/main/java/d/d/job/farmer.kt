@@ -1,6 +1,5 @@
 package d.d.job
 
-import d.d.Main
 import d.d.Protect
 import org.bukkit.ChatColor
 import org.bukkit.Material

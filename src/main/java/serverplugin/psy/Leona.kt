@@ -1,5 +1,6 @@
 package serverplugin.psy
 
+import org.bukkit.Material
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
@@ -9,7 +10,7 @@ import serverplugin.stun
 
 class Leona {
     fun attack(e:EntityDamageByEntityEvent, config:FileConfiguration, plugin: Plugin){
-        if(e.damager is Player&&config.getString("${e.damager.name}.psy")=="leona")
+        if(e.damager is Player&&config.getString("${e.damager.name}.psy")=="leona"&&(e.entity as Player).inventory.itemInMainHand.type!= Material.BOW&&(e.entity as Player).inventory.itemInMainHand.type!= Material.CROSSBOW)
         {
             val task: BukkitRunnable = object : BukkitRunnable() {
                 override fun run() {

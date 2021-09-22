@@ -1,6 +1,7 @@
 package serverplugin.psy
 
 import org.bukkit.FluidCollisionMode
+import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.enchantments.Enchantment
@@ -15,7 +16,7 @@ class Kalistar{
     fun kalistar(e: EntityShootBowEvent,config:FileConfiguration){
         val player =e.entity
         val arrow = e.projectile
-        if(arrow is Arrow &&player is Player &&config.getString("${player.name}.psy")=="kalistar")
+        if(arrow is Arrow &&player is Player &&config.getString("${player.name}.psy")=="kalistar"&&player.inventory.itemInMainHand.type== Material.BOW)
         {
             val start = player.eyeLocation
             val direction = start.direction

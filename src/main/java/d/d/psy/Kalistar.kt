@@ -1,22 +1,18 @@
 package d.d.psy
 
-import d.d.Main
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Particle
+import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityShootBowEvent
 import java.util.function.Predicate
 
-class Kalistar : Listener {
-    @EventHandler
-    fun kalistar(e: EntityShootBowEvent){
-        var config= Main().config
+class Kalistar{
+    fun kalistar(e: EntityShootBowEvent,config:FileConfiguration){
         var player =e.entity
         val arrow = e.projectile
         if(arrow is Arrow &&player is Player &&config.getString("${player.name}.psy")=="kalistar")

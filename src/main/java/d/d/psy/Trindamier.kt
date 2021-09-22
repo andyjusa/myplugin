@@ -1,19 +1,16 @@
 package d.d.psy
 
 import d.d.Main
+import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 
-class Trindamier : Listener {
-    @EventHandler
-    fun trindamier(e: EntityDamageByEntityEvent)
+class Trindamier {
+    fun entitydamagebyentityevent(e: EntityDamageByEntityEvent,config:FileConfiguration)
     {
-        var config = Main().config
         val player = e.damager
         if(player is Player &&config.getString("${player.name}.psy")=="trindamier")
         {

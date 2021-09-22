@@ -1,6 +1,6 @@
 name: D
 version: '${project.version}'
-main: d.d.D
+main: d.d.Main
 api-version: 1.17
 commands:
   jm:

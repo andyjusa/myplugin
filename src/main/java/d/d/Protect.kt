@@ -6,11 +6,11 @@ import org.bukkit.event.player.PlayerInteractEvent
 
 class Protect {
     @EventHandler
-    fun intrusion(e: PlayerInteractEvent)
+    fun interact(e: PlayerInteractEvent)
     {
         if(e.clickedBlock!=null)
         {
-            e.isCancelled=region().blocking(e.clickedBlock as Block,e.player)
+            e.isCancelled=Main().blocking(e.clickedBlock as Block,e.player)
         }
 
     }

@@ -1,19 +1,16 @@
 package d.d.job
 
-import d.d.region
+import d.d.Main
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.block.data.Ageable
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 import kotlin.math.ceil
 
-class farmer : Listener {
-    @EventHandler
+class farmer{
     fun onBreak(e: BlockBreakEvent) {
-        var region=region()
+        var region=Main()
         e.isCancelled=region.blocking(e.block,e.player)
         if (e.block.type == Material.WHEAT && !e.isCancelled) {
             val r = ceil(Math.random() * 10000)

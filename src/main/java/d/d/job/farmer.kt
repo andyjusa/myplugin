@@ -1,17 +1,19 @@
 package d.d.job
 
 import d.d.Main
+import d.d.Protect
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.Server
 import org.bukkit.block.data.Ageable
+import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 import kotlin.math.ceil
 
 class farmer{
-    fun onBreak(e: BlockBreakEvent) {
-        var region=Main()
-        e.isCancelled=region.blocking(e.block,e.player)
+    fun onBreak(e: BlockBreakEvent,config: FileConfiguration,server: Server) {
+        e.isCancelled=Protect().blocking(e.block,e.player,config,server)
         if (e.block.type == Material.WHEAT && !e.isCancelled) {
             val r = ceil(Math.random() * 10000)
             val ag= e.block.blockData as Ageable

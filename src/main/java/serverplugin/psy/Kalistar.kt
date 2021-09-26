@@ -11,27 +11,33 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityShootBowEvent
 import java.util.function.Predicate
-
+class KalistarInfo{
+    val name = "kalistar"
+    val arrowSize = 1.5
+    val range = 10.0
+    val alpha=0.7
+    val damage = 5
+    val fireTicks = 100
+}
 class Kalistar{
     fun kalistar(e: EntityShootBowEvent,config:FileConfiguration){
+        val info = KalistarInfo()
         val player =e.entity
         val arrow = e.projectile
-        if(arrow is Arrow &&player is Player &&config.getString("${player.name}.psy")=="kalistar"&&player.inventory.itemInMainHand.type== Material.BOW)
+        if(arrow is Arrow &&player is Player &&config.getString("${player.name}.psy")==info.name&&player.inventory.itemInMainHand.type== Material.BOW)
         {
             val start = player.eyeLocation
             val direction = start.direction
             val world = start.world
-            val range=10.0
-            val arrowSize=1.5
             e.isCancelled=true
             val pre: Predicate<Entity> = Predicate{ num: Entity -> num !=player && num is LivingEntity }
             val hitResult = world?.rayTrace(
                 start,
                 direction,
-                range,
+                info.range,
                 FluidCollisionMode.NEVER,
                 true,
-                arrowSize,
+                info.arrowSize,
                 pre
             )
             var isfire = false
@@ -50,13 +56,13 @@ class Kalistar{
                 var alpha=0.0
                 e.bow?.enchantments?.get(Enchantment.ARROW_DAMAGE).let {
                     if (it != null) {
-                        alpha+=it*0.2
+                        alpha+=it*info.alpha
                     }
                 }
                 target?.let {
                     it as LivingEntity
-                    it.damage(5.0+alpha,player)
-                    it.fireTicks=if(isfire)100 else it.fireTicks
+                    it.damage(info.damage+alpha,player)
+                    it.fireTicks=if(isfire)info.fireTicks else it.fireTicks
                     player.location.y+=0.5
                     player.velocity.y=0.0
                     val velocity = player.velocity.normalize().multiply(1.6)

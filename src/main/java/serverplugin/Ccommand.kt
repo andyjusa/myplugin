@@ -13,6 +13,7 @@ class Ccommand {
         sender: CommandSender,
         args: Array<out String>,
         config: FileConfiguration,
+        main: Main
     ): Boolean {
         if (sender is Player) {
             when (args[0]) {
@@ -48,13 +49,13 @@ class Ccommand {
                     sender.teleport(loc)
                 }
                 "save" -> {
-                    Main().saveConfig()
+                    main.saveConfig()
                 }
                 "psy" -> {
                     config.set("${sender.name}.psy", args[1])
                 }
                 "load" -> {
-                    Main().reloadConfig()
+                    main.reloadConfig()
                 }
             }
             return true

@@ -18,11 +18,9 @@ import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerMoveEvent
-import org.bukkit.event.player.PlayerTeleportEvent
-import org.bukkit.event.player.PlayerToggleSprintEvent
+import org.bukkit.event.player.*
 import org.bukkit.plugin.java.JavaPlugin
+import serverplugin.psy.Irelia
 import serverplugin.psy.Leona
 import java.io.File
 
@@ -44,12 +42,12 @@ class Main : JavaPlugin(),CommandExecutor, Listener {
         cd.sendMessage("Disable Plugin")
     }
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        return Ccommand().onCommand(sender, args, config)
+        return Ccommand().onCommand(sender, args, config,this)
     }
     @EventHandler(priority = EventPriority.LOW)
     fun entitydamagebyentityevent(e:EntityDamageByEntityEvent)
     {
-        Trindamier().entitydamagebyentityevent(e,config)
+        Trindamier().entityDamageByEntityEvent(e,config)
         Leona().attack(e,config,this)
     }
     @EventHandler(priority = EventPriority.LOW)
@@ -61,6 +59,11 @@ class Main : JavaPlugin(),CommandExecutor, Listener {
     fun playerinteractevent(e:PlayerInteractEvent)
     {
         Protect().interact(e,config,server)
+    }
+    @EventHandler(priority = EventPriority.LOW)
+    fun playerinteractatentity(e:PlayerInteractAtEntityEvent)
+    {
+        Irelia().interactEntity(e,config,this)
     }
     @EventHandler(priority = EventPriority.LOW)
     fun entityshootbowevent(e: EntityShootBowEvent)
@@ -121,6 +124,11 @@ class Main : JavaPlugin(),CommandExecutor, Listener {
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     fun pte(e:PlayerTeleportEvent)
+    {
+        e.isCancelled=config.getBoolean("${e.player.name}.stun")
+    }
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun piae(e:PlayerInteractAtEntityEvent)
     {
         e.isCancelled=config.getBoolean("${e.player.name}.stun")
     }
